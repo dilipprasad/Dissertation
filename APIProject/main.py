@@ -5,6 +5,8 @@ from fastapi import FastAPI
 # import ml_model as model
 import pytz
 from datetime import datetime
+from NLPProcessor import NLPProcesor
+from Search import Search
 import WebCrawler
 import WebdataExtractor
 import AzureQueue
@@ -77,3 +79,17 @@ async def invoke_getall_queuemsg(queueName: str):
     queue =  AzureQueue.AZQueue(queueName)#for fetching links
     result = await queue.GetAllQueueMessages(True)
     return " <br/>".join(result)
+
+
+
+@app.get("/ProcessNLP")
+async def invoke_web_crawling():
+    results = await NLPProcesor.Invoke()
+    return results
+
+
+
+@app.get("/Search")
+async def invoke_Search(searchQuery: str):
+    results = await Search.search_similar_text(searchQuery)
+    return results
